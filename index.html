@@ -1,308 +1,417 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Handball Statistik</title>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Handball Kollektiv</title>
+<meta name="theme-color" content="#0b4f16" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Handball Kollektiv" />
+<link rel="manifest" href="./manifest.webmanifest" />
 <style>
-    body { font-family: Arial, sans-serif; margin: 0; background-color: #fff; }
-    body::before, body::after {
-        content: ""; position: fixed; top: 50%; transform: translateY(-50%);
-        width: 70vw; height: 90vh; background-repeat: no-repeat; background-position: center;
-        background-size: contain; opacity: 0.15; filter: blur(0.5px);
-        z-index: -1; pointer-events: none;
-    }
-    body::before { left: 15%; }
-    body::after { right: 15%; }
-    h1, h2 { text-align: center; margin-bottom: 15px; }
-    #setup { background: rgba(255, 255, 255, 0.6); padding: 20px; border-radius: 12px;
-        max-width: 500px; margin: 30px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    #opponent, #teamSelect, #archiveSelect {
-        font-size: 1.1em; padding: 12px; width: 100%; margin-bottom: 20px;
-        border: 1px solid #ccc; border-radius: 8px; background-color: rgba(255,255,255,0.85);
-        transition: border-color 0.3s, box-shadow 0.3s;
-        color: black;
-    }
-    #opponent:focus, #teamSelect:focus, #archiveSelect:focus {
-        outline: none; border-color: #009688; box-shadow: 0 0 5px rgba(0,150,136,0.5);
-    }
-    #player-selection { display: flex; gap: 10px; flex-wrap: nowrap; justify-content: space-between; }
-    #player-selection .column { width: 48%; display: flex; flex-direction: column; gap: 8px; }
-    #player-selection label { cursor: pointer; font-size: 1em; padding: 4px 0; }
-    #player-selection input[type="checkbox"] { margin-right: 6px; transform: scale(1.2); }
-    .add-player-container { margin-top: 15px; display: flex; gap: 5px; }
-    .add-player-container input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
-    .add-player-container button { padding: 8px 12px; border: none; border-radius: 6px;
-        background-color: #009688; color: white; cursor: pointer; font-size: 1em; }
-    .add-player-container button:hover { background-color: #00796b; }
-    .start-btn {
-        font-size: 1.3em; padding: 12px 15px; background: linear-gradient(90deg, #009688, #26a69a);
-        color: white; border: none; border-radius: 8px; cursor: pointer;
-        width: 100%; margin-top: 20px; transition: background 0.3s, transform 0.1s;
-    }
-    .start-btn:hover { background: linear-gradient(90deg, #00796b, #26a69a); }
-    .start-btn:active { transform: scale(0.98); }
-    .player-card { border-radius: 8px; padding: 10px; margin: 10px; flex: 1; min-width: 250px;
-        background: white; box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-    }
-    .player-name { font-weight: bold; font-size: 1.4em; text-align: center; margin-bottom: 10px; }
-    .grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 10px; }
-    .btn { width: 48%; padding: 12px; margin: 2px 1%; border: none; cursor: pointer;
-        font-size: 1em; border-radius: 6px; user-select: none;
-    }
-    .positive { background-color: #d4edda; }
-    .negative { background-color: #f8d7da; }
-    .full-width { width: 98%; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; font-size: 0.9em; }
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
-    th { background: #f0f0f0; }
-    .thick-separator { border-left: 3px solid black !important; }
-    .export-buttons { margin-top: 20px; text-align: center; }
-    .hidden { display: none; }
-    .finish-btn {
-        font-size: 1.2em;
-        padding: 10px 20px;
-        margin: 20px auto;
-        display: block;
-        background: #ff9800;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-    .finish-btn:hover { background: #e68900; }
+:root {
+  --text-sm: clamp(0.9rem, 0.82rem + 0.25vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.08rem);
+  --text-lg: clamp(1.12rem, 1.02rem + 0.45vw, 1.35rem);
+  --text-xl: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
+  --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem;
+  --radius-md: 0.8rem; --radius-lg: 1rem; --radius-xl: 1.25rem;
+  --shadow-md: 0 12px 28px rgba(9, 27, 12, 0.08);
+  --shadow-sm: 0 2px 6px rgba(9, 27, 12, 0.06);
+  --bg: #f3f5f0;
+  --surface: rgba(255,255,255,0.93);
+  --surface-2: #eef2ea;
+  --border: rgba(18, 35, 20, 0.12);
+  --text: #1f261f;
+  --muted: #647064;
+  --primary: #0d5b1f;
+  --primary-2: #1e7a31;
+  --fox-red: #d91f26;
+  --fox-red-dark: #b8171d;
+  --fox-silver: #d7d9d8;
+  --offense-tint: rgba(13, 91, 31, 0.08);
+  --defense-tint: rgba(217, 31, 38, 0.08);
+  --green-soft: #dcefd6;
+  --green-strong: #3f7d32;
+  --red-soft: #f7dbdb;
+  --red-strong: #b13a3a;
+  --yellow-soft: #f7edc6;
+  --yellow-strong: #a97900;
+}
+*{box-sizing:border-box} html,body{margin:0;padding:0} html{scroll-behavior:smooth}
+body{min-height:100vh;font-family:Arial,sans-serif;font-size:var(--text-base);color:var(--text);background:linear-gradient(180deg, rgba(13,91,31,0.05), rgba(243,245,240,1) 26%), var(--bg)}
+button,input,textarea{font:inherit} button{cursor:pointer} .hidden{display:none!important}
+.app{max-width:1360px;margin:0 auto;padding:var(--space-5)}
+.panel{width:100%;border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--surface);box-shadow:var(--shadow-md);backdrop-filter:blur(10px)}
+.setup{max-width:760px;margin:6vh auto 0;padding:var(--space-8);position:relative;overflow:hidden}
+.setup::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg, rgba(13,91,31,0.07), rgba(217,31,38,0.05));pointer-events:none}
+.setup-grid,.workspace-grid{position:relative;z-index:1}
+.setup-grid{display:grid;gap:var(--space-5)}
+.field label,.notes label{display:block;font-weight:700;margin-bottom:var(--space-2)}
+.field input,.notes textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;background:#fff;color:var(--text)}
+.field input:focus,.notes textarea:focus{outline:2px solid rgba(13,91,31,0.15);border-color:var(--primary)}
+.start-btn,.save-btn,.utility-btn{min-height:52px;border-radius:var(--radius-md);border:1px solid transparent;font-weight:700}
+.start-btn{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:#fff}
+.workspace{margin-top:var(--space-5)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);padding:var(--space-5) var(--space-6);margin-bottom:var(--space-5);background:linear-gradient(90deg, rgba(255,255,255,0.94), rgba(238,242,234,0.96));overflow:hidden;position:relative}
+.topbar::after{content:"";position:absolute;top:-18%;right:-2%;width:210px;height:210px;background:url('./logo.png.JPG') center/contain no-repeat;opacity:.12;pointer-events:none;filter:saturate(.9)}
+.brand-stack{display:flex;align-items:center;gap:var(--space-4);min-width:0}
+.brand-logo{width:72px;height:72px;border-radius:18px;object-fit:contain;background:#fff;padding:6px;border:1px solid rgba(18,35,20,0.08);box-shadow:var(--shadow-sm)}
+.topbar h1{margin:0;font-size:var(--text-xl)} .topbar-meta{color:var(--muted);font-size:var(--text-sm);margin-top:var(--space-2)} .topbar-actions{display:flex;gap:var(--space-3);flex-wrap:wrap}
+.utility-btn{background:#fff;border-color:var(--border);padding:.8rem 1rem}.utility-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.utility-btn.undo{width:52px;padding:0}
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5)}
+.section-card{padding:var(--space-5);position:relative;overflow:hidden}
+.section-card.offense{background:linear-gradient(180deg, rgba(13,91,31,0.07), rgba(255,255,255,0.95) 26%)}
+.section-card.defense{background:linear-gradient(180deg, rgba(217,31,38,0.07), rgba(255,255,255,0.95) 26%)}
+.section-card::after{content:"";position:absolute;right:-36px;top:-24px;width:120px;height:120px;background:url('./logo.png.JPG') center/contain no-repeat;opacity:.07;pointer-events:none}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4)} .section-head h2{margin:0;font-size:var(--text-lg)}
+.entry-count{border-radius:999px;padding:.35rem .75rem;font-size:var(--text-sm);font-weight:700}.offense .entry-count{background:rgba(13,91,31,.12);color:var(--primary)}.defense .entry-count{background:rgba(217,31,38,.12);color:var(--fox-red-dark)}
+.controls{display:grid;gap:var(--space-4)} .group{border:1px solid var(--border);border-radius:var(--radius-lg);background:rgba(255,255,255,.88);padding:var(--space-4)} .group h3{margin:0 0 var(--space-3);font-size:var(--text-base)}
+.button-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:var(--space-3)}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-2);align-items:start}.result-column{display:grid;gap:var(--space-2)}
+.choice-btn,.result-btn{min-height:38px;border-radius:var(--radius-md);border:1px solid var(--border);background:#fff;font-weight:700;padding:.32rem .3rem;font-size:.84rem;transition:transform .14s ease, border-color .14s ease, background-color .14s ease}
+.choice-btn:active,.result-btn:active,.save-btn:active,.utility-btn:active,.start-btn:active{transform:scale(.985)}
+.choice-btn.selected{background:rgba(13,91,31,.12);border-color:var(--primary)} .defense .choice-btn.selected{background:rgba(217,31,38,.1);border-color:var(--fox-red)}
+.result-btn.green{background:var(--green-soft);border-color:rgba(63,125,50,.3)} .result-btn.red{background:var(--red-soft);border-color:rgba(177,58,58,.3)} .result-btn.yellow{background:var(--yellow-soft);border-color:rgba(169,121,0,.35)}
+.result-btn.selected.green{background:rgba(63,125,50,.24);border-color:var(--green-strong)} .result-btn.selected.red{background:rgba(177,58,58,.24);border-color:var(--red-strong)} .result-btn.selected.yellow{background:rgba(169,121,0,.28);border-color:var(--yellow-strong)}
+.multi-caption{font-size:var(--text-sm);color:var(--muted);margin:-.25rem 0 .35rem}
+.action-row{display:flex;gap:var(--space-3);flex-wrap:wrap} .save-btn{flex:1;min-width:180px;background:#fff;border-color:var(--border)} .save-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)} .defense .save-btn.primary{background:var(--fox-red);border-color:var(--fox-red)}
+.tables{display:grid;gap:var(--space-5);margin-top:var(--space-5)} .table-card{padding:var(--space-5)} .table-card.offense{border-top:8px solid var(--primary)} .table-card.defense{border-top:8px solid var(--fox-red)}
+.table-tools{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap} .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:var(--radius-lg);background:#fff;max-width:100%}
+table{width:100%;table-layout:fixed;border-collapse:collapse} th,td{padding:.82rem .72rem;border-bottom:1px solid rgba(40,37,29,.09);text-align:left;vertical-align:top;word-break:break-word} th{position:sticky;top:0;background:var(--surface-2);z-index:1} th button{background:transparent;border:0;padding:0;font:inherit;font-weight:700}
+tbody tr:hover{background:#faf8f3} tbody tr.editing{background:#e7f0ff}
+.result-cell.green{background:rgba(220,239,214,.82)} .result-cell.red{background:rgba(247,219,219,.82)} .result-cell.yellow{background:rgba(247,237,198,.88)}
+.pill-list{display:flex;flex-wrap:wrap;gap:.35rem}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:.2rem .55rem;background:#eee;font-size:var(--text-sm);font-weight:700}.pill.follow{background:#edf4f4;color:#14575c}.defense .pill.follow{background:#fbeaea;color:#8c2328}.pill.kreis{background:#f3efe6;color:#7a5c19}
+.notes{padding:var(--space-5);margin-top:var(--space-5)} .notes textarea{min-height:110px;resize:vertical}.install-note{font-size:var(--text-sm);color:var(--muted)} .empty{padding:var(--space-8);text-align:center;color:var(--muted)}
+@media (max-width:1100px){.dual-grid{grid-template-columns:1fr}.topbar::after{opacity:.08}} @media (max-width:760px){.app{padding:var(--space-4)}.setup,.section-card,.table-card,.notes,.topbar{padding:var(--space-4)}.topbar{flex-direction:column;align-items:stretch}.brand-stack{align-items:flex-start}.button-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.result-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<main id="setup">
-    <h1>Willkommen!</h1>
-    <input type="text" id="opponent" placeholder="Gegner eingeben">
-    <select id="teamSelect">
-        <option value="Fux2">Fux2</option>
-        <option value="FuxA">FuxA</option>
-    </select>
-
-    <select id="archiveSelect">
-        <option value="">Archivierte Spiele anzeigen...</option>
-    </select>
-
-    <section id="player-selection">
-        <div class="column" id="col1"></div>
-        <div class="column" id="col2"></div>
-    </section>
-    <div class="add-player-container">
-        <input type="text" id="newPlayerName" placeholder="Spielername eingeben">
-        <button type="button" id="addPlayerBtn">+</button>
+<div class="app">
+  <section id="setup" class="panel setup">
+    <div class="setup-grid">
+      <div class="field"><label for="opponent">Gegner</label><input id="opponent" type="text" placeholder="Gegner eingeben" /></div>
+      <div class="field"><label for="matchDate">Datum</label><input id="matchDate" type="date" /></div>
+      <button id="startBtn" class="start-btn" type="button">Start</button>
     </div>
-    <button class="start-btn" id="startBtn">Start</button>
-</main>
+  </section>
 
-<h1 id="headline" class="hidden"></h1>
-<div id="players" class="grid"></div>
+  <section id="workspace" class="workspace hidden">
+    <div class="panel topbar">
+      <div class="brand-stack">
+        <img id="brandLogo" src="./logo.png.JPG" alt="Füchse Berlin Logo" class="brand-logo" loading="eager" width="72" height="72" />
+        <div>
+          <h1 id="headline">Statistik</h1>
+          <div class="topbar-meta" id="topMeta"></div>
+        </div>
+      </div>
+      <div class="topbar-actions"><button id="undoBtn" class="utility-btn undo" type="button" aria-label="Undo">↶</button><button id="pdfBtn" class="utility-btn primary" type="button">Export PDF</button></div>
+    </div>
 
-<div class="export-buttons hidden" id="playerExport">
-    <button data-export="excel" data-table="playerTable">Export Excel</button>
-    <button data-export="pdf" data-table="playerTable">Export PDF</button>
+    <div class="dual-grid">
+      <section class="panel section-card offense">
+        <div class="section-head"><h2>Offensive Aktionen</h2><div class="entry-count" id="offenseCount">0 Einträge</div></div>
+        <div class="controls">
+          <div class="group"><h3>Auslösehandlung</h3><div id="offenseTriggerButtons" class="button-grid"></div></div>
+          <div class="group"><h3>Kreisposition</h3><div class="multi-caption">0 bis 2 Werte</div><div id="offenseCircleButtons" class="button-grid"></div></div>
+          <div class="group"><h3>Folgehandlung</h3><div class="multi-caption">0 bis 3 Werte</div><div id="offenseFollowButtons" class="button-grid"></div></div>
+          <div class="group"><h3>Ergebnis</h3><div id="offenseResultButtons" class="result-grid"></div></div>
+          <div class="action-row"><button id="offenseResetBtn" class="save-btn" type="button">Auswahl leeren</button><button id="offenseSaveBtn" class="save-btn primary" type="button">Offensive Aktion speichern</button></div>
+        </div>
+      </section>
+
+      <section class="panel section-card defense">
+        <div class="section-head"><h2>Defensive Aktionen</h2><div class="entry-count" id="defenseCount">0 Einträge</div></div>
+        <div class="controls">
+          <div class="group"><h3>Auslösehandlung</h3><div id="defenseTriggerButtons" class="button-grid"></div></div>
+          <div class="group"><h3>Kreisposition</h3><div class="multi-caption">0 bis 2 Werte</div><div id="defenseCircleButtons" class="button-grid"></div></div>
+          <div class="group"><h3>Folgehandlung</h3><div class="multi-caption">0 bis 3 Werte</div><div id="defenseFollowButtons" class="button-grid"></div></div>
+          <div class="group"><h3>Ergebnis</h3><div id="defenseResultButtons" class="result-grid"></div></div>
+          <div class="action-row"><button id="defenseResetBtn" class="save-btn" type="button">Auswahl leeren</button><button id="defenseSaveBtn" class="save-btn primary" type="button">Defensive Aktion speichern</button></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="tables">
+      <section class="panel table-card offense">
+        <div class="table-tools"><h2>Offensive Rohdaten</h2><div id="offenseSortInfo"></div></div>
+        <div class="table-wrap"><table><thead><tr><th style="width:7%"><button type="button" data-table="offense" data-sort="index">#</button></th><th style="width:18%"><button type="button" data-table="offense" data-sort="trigger">Auslösehandlung</button></th><th style="width:16%"><button type="button" data-table="offense" data-sort="circle">Kreisposition</button></th><th style="width:39%"><button type="button" data-table="offense" data-sort="follow">Folgehandlung</button></th><th style="width:20%"><button type="button" data-table="offense" data-sort="result">Ergebnis</button></th></tr></thead><tbody id="offenseTableBody"><tr><td colspan="5" class="empty">Noch keine offensiven Einträge.</td></tr></tbody></table></div>
+      </section>
+      <section class="panel table-card defense">
+        <div class="table-tools"><h2>Defensive Rohdaten</h2><div id="defenseSortInfo"></div></div>
+        <div class="table-wrap"><table><thead><tr><th style="width:7%"><button type="button" data-table="defense" data-sort="index">#</button></th><th style="width:18%"><button type="button" data-table="defense" data-sort="trigger">Auslösehandlung</button></th><th style="width:16%"><button type="button" data-table="defense" data-sort="circle">Kreisposition</button></th><th style="width:39%"><button type="button" data-table="defense" data-sort="follow">Folgehandlung</button></th><th style="width:20%"><button type="button" data-table="defense" data-sort="result">Ergebnis</button></th></tr></thead><tbody id="defenseTableBody"><tr><td colspan="5" class="empty">Noch keine defensiven Einträge.</td></tr></tbody></table></div>
+      </section>
+    </div>
+
+    <section class="panel notes"><label for="notes">Notizen</label><textarea id="notes" placeholder="Notizen zum Spiel eingeben..."></textarea><p class="install-note">Nach dem ersten Online-Laden kann diese Version über den Homescreen offline nutzbar sein, wenn sie über eine feste Webadresse mit Service Worker bereitgestellt wird.</p></section>
+  </section>
 </div>
-<div id="playerStats"></div>
-
-<div class="export-buttons hidden" id="teamExport">
-    <button data-export="excel" data-table="teamTable">Export Excel</button>
-    <button data-export="pdf" data-table="teamTable">Export PDF</button>
-</div>
-<div id="teamStats"></div>
-
-<!-- Neuer Button zum Abschließen -->
-<button id="finishGameBtn" class="finish-btn hidden">Spiel abschließen</button>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script>
 (() => {
-    const cb = Date.now();
-    const col1 = document.getElementById("col1");
-    const col2 = document.getElementById("col2");
-    const startBtn = document.getElementById("startBtn");
-    const teamSelect = document.getElementById("teamSelect");
-    const addPlayerBtn = document.getElementById("addPlayerBtn");
-    const newPlayerNameInput = document.getElementById("newPlayerName");
-    const archiveSelect = document.getElementById("archiveSelect");
-    const finishBtn = document.getElementById("finishGameBtn");
+  const triggerOptions = ['Öffnen','1','1 hoch','2','3','4','4 breit','4 zentral','4+','5','5 kurz','6','6B','7vs6','1. Welle','2. Welle','3. Welle'];
+  const followOptions = ['Brustsperre','Außensperre','weg','weg fake','Nantes','6','6+6','Check','zurück'];
+  const circleOptions = ['1/2','2/3','3/4','4/5','5/6'];
+  const shotLabels = ['DBR','SLW','SPW','Kreis','Außen','TGS','7m','leeres Tor'];
 
-    let currentOpponent = "";
-    let currentTeam = "";
-    let gameFinished = false;
+  function makeResults(mode) {
+    const positives = shotLabels.map(label => ({ key: `${label}_pos`, display: label, group: 'green' }));
+    const negatives = shotLabels.map(label => ({ key: `${label}_neg`, display: label, group: 'red' }));
+    const tfGroup = 'red';
+    return [...positives, ...negatives, { key: 'TF', display: 'TF', group: tfGroup }, { key: 'Freiwurf', display: 'Freiwurf', group: 'yellow' }];
+  }
 
-    const teams = {
-        Fux2: ["Julian Kusche","Gabriel Kofler","Lauro Pichiri","Felix Bernkop-Schnürch","Rune Laskowski","Lucas Mohr","Navi Yatawarage","William Reichardt","Justin Wollny","Jan Grüner","Dominik Kupiec","Lennart Steltner","Luca Thiel","Tim Schröder","Jonas Kofler","Till Braren","Pius Joppich","Norman Glamann"],
-        FuxA: ["Leo Nowak","Simon Poppe","Fritz Parke","Fynn Paulicks","Filip Dominikovic","Leo Tautenhahn","Antonio","Noah Skei","Simon","Albert Schmidt","Gabor Zeuch","Christopher Losch","Davide Bambini","Tillman Stark","Henning Lahuis","Ole Krake","TW3"]
-    };
+  const offenseResults = makeResults('offense');
+  const defenseResults = makeResults('defense');
 
-    let playerNames = [...teams.Fux2];
-    const actionsPositive = [{key:"KM_pos",label:"KM"},{key:"DBR_pos",label:"DBR"},{key:"NAH_pos",label:"NAH"},{key:"FERN_pos",label:"FERN"},{key:"TGS_pos",label:"TGS"},{key:"7M_pos",label:"7M"}];
-    const actionsNegative = [{key:"KM_neg",label:"KM"},{key:"DBR_neg",label:"DBR"},{key:"NAH_neg",label:"NAH"},{key:"FERN_neg",label:"FERN"},{key:"TGS_neg",label:"TGS"},{key:"7M_neg",label:"7M"},{key:"TF_neg",label:"TF"}];
+  const state = {
+    meta: { opponent: '', matchDate: '' },
+    undoStack: [],
+    offense: { entries: [], editingId: null, selection: { trigger: '', follows: [], circles: [], result: '', resultDisplay: '', group: '' }, sort: { key: 'index', dir: 'desc' } },
+    defense: { entries: [], editingId: null, selection: { trigger: '', follows: [], circles: [], result: '', resultDisplay: '', group: '' }, sort: { key: 'index', dir: 'desc' } }
+  };
 
-    let playersData = {};
-    let pressTimer, longPressActive, activeTouch;
+  const els = {
+    setup: document.getElementById('setup'), workspace: document.getElementById('workspace'), opponent: document.getElementById('opponent'), matchDate: document.getElementById('matchDate'), startBtn: document.getElementById('startBtn'), headline: document.getElementById('headline'), topMeta: document.getElementById('topMeta'), undoBtn: document.getElementById('undoBtn'), pdfBtn: document.getElementById('pdfBtn'), notes: document.getElementById('notes'), offenseCount: document.getElementById('offenseCount'), defenseCount: document.getElementById('defenseCount'), offenseSortInfo: document.getElementById('offenseSortInfo'), defenseSortInfo: document.getElementById('defenseSortInfo'), offenseTableBody: document.getElementById('offenseTableBody'), defenseTableBody: document.getElementById('defenseTableBody'), offenseTriggerButtons: document.getElementById('offenseTriggerButtons'), offenseFollowButtons: document.getElementById('offenseFollowButtons'), offenseCircleButtons: document.getElementById('offenseCircleButtons'), offenseResultButtons: document.getElementById('offenseResultButtons'), defenseTriggerButtons: document.getElementById('defenseTriggerButtons'), defenseFollowButtons: document.getElementById('defenseFollowButtons'), defenseCircleButtons: document.getElementById('defenseCircleButtons'), defenseResultButtons: document.getElementById('defenseResultButtons'), offenseSaveBtn: document.getElementById('offenseSaveBtn'), defenseSaveBtn: document.getElementById('defenseSaveBtn'), offenseResetBtn: document.getElementById('offenseResetBtn'), defenseResetBtn: document.getElementById('defenseResetBtn')
+  };
 
-    window.addEventListener("load", () => {
-        document.styleSheets[0].cssRules[1].style.backgroundImage = `url('logo.png.JPG?cb=${cb}')`;
-        document.styleSheets[0].cssRules[2].style.backgroundImage = `url('logo.png.JPG?cb=${cb}')`;
-        renderPlayerCheckboxes();
-        loadArchive();
+  let pressTimer = null, longPressFired = false;
+  const setToday = () => els.matchDate.value = new Date().toISOString().split('T')[0];
+  const fmtDate = value => new Date(value + 'T00:00:00').toLocaleDateString('de-DE');
+  const h = str => String(str ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+  const currentStore = type => state[type];
+  const joinList = arr => arr.length ? arr.join(' | ') : '—';
+  const displayResult = value => value && (value.endsWith('_pos') || value.endsWith('_neg')) ? value.replace(/_(pos|neg)$/,'') : (value || '');
+  const cloneEntry = e => JSON.parse(JSON.stringify(e));
+
+  function renderButtons(mount, items, type, domain) {
+    if (type !== 'result') {
+      mount.innerHTML = '';
+      items.forEach((item) => {
+        const rawValue = item;
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.dataset.value = rawValue; btn.dataset.domain = domain; btn.dataset.type = type; btn.className = 'choice-btn'; btn.textContent = rawValue;
+        btn.addEventListener('click', () => handleSelection(domain, type, rawValue));
+        mount.appendChild(btn);
+      });
+      return;
+    }
+
+    const positives = items.filter(item => item.group === 'green' || item.group === 'yellow');
+    const negatives = items.filter(item => item.group === 'red');
+    mount.innerHTML = '<div class="result-column" data-col="left"></div><div class="result-column" data-col="right"></div>';
+    const left = mount.querySelector('[data-col="left"]');
+    const right = mount.querySelector('[data-col="right"]');
+
+    positives.forEach(item => left.appendChild(createResultButton(item, domain, type)));
+    negatives.forEach(item => right.appendChild(createResultButton(item, domain, type)));
+  }
+
+  function createResultButton(item, domain, type) {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.dataset.value = item.key; btn.dataset.domain = domain; btn.dataset.type = type; btn.className = `result-btn ${item.group}`; btn.textContent = item.display;
+    btn.addEventListener('click', () => handleSelection(domain, type, item.key, item.group, item.display));
+    return btn;
+  }
+
+  function handleSelection(domain, type, value, group='', display='') {
+    const store = currentStore(domain);
+    if (type === 'trigger') store.selection.trigger = value;
+    if (type === 'result') { store.selection.result = value; store.selection.group = group; store.selection.resultDisplay = display || displayResult(value); }
+    if (type === 'follows') toggleMulti(store.selection.follows, value, 3);
+    if (type === 'circles') toggleMulti(store.selection.circles, value, 2);
+    updateSelectedButtons(domain);
+  }
+
+  function toggleMulti(arr, value, max) {
+    const index = arr.indexOf(value);
+    if (index >= 0) arr.splice(index, 1);
+    else if (arr.length < max) arr.push(value);
+  }
+
+  function updateSelectedButtons(domain) {
+    const store = currentStore(domain);
+    ['TriggerButtons','FollowButtons','CircleButtons','ResultButtons'].forEach(suffix => {
+      const el = els[`${domain}${suffix}`];
+      if (!el) return;
+      el.querySelectorAll('button').forEach(btn => {
+        const type = btn.dataset.type;
+        if (type === 'trigger') btn.classList.toggle('selected', btn.dataset.value === store.selection.trigger);
+        if (type === 'result') btn.classList.toggle('selected', btn.dataset.value === store.selection.result);
+        if (type === 'follows') btn.classList.toggle('selected', store.selection.follows.includes(btn.dataset.value));
+        if (type === 'circles') btn.classList.toggle('selected', store.selection.circles.includes(btn.dataset.value));
+      });
     });
+  }
 
-    function renderPlayerCheckboxes() {
-        col1.innerHTML = ""; col2.innerHTML = "";
-        playerNames.forEach((name,i) => {
-            const label = document.createElement("label");
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox"; checkbox.value = i + 1;
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(` ${name}`));
-            (i < Math.ceil(playerNames.length / 2) ? col1 : col2).appendChild(label);
-        });
+  function clearSelection(domain) {
+    const store = currentStore(domain);
+    store.selection = { trigger:'', follows:[], circles:[], result:'', resultDisplay:'', group:'' };
+    store.editingId = null;
+    updateSelectedButtons(domain);
+    renderTable(domain);
+  }
+
+  function validate(domain) {
+    const s = currentStore(domain).selection;
+    if (!s.trigger || !s.result) { alert('Bitte Auslösehandlung und Ergebnis auswählen.'); return false; }
+    return true;
+  }
+
+  const pushUndo = action => state.undoStack.push(action);
+
+  function saveEntry(domain) {
+    if (!validate(domain)) return;
+    const store = currentStore(domain);
+    const payload = { trigger: store.selection.trigger, follows: [...store.selection.follows], circles: [...store.selection.circles], result: store.selection.result, resultDisplay: store.selection.resultDisplay || displayResult(store.selection.result), group: store.selection.group, time: Date.now() };
+    if (store.editingId !== null) {
+      const idx = store.entries.findIndex(e => e.id === store.editingId); if (idx === -1) return;
+      const before = cloneEntry(store.entries[idx]); store.entries[idx] = { ...store.entries[idx], ...payload }; pushUndo({ type:'edit', domain, before, after: cloneEntry(store.entries[idx]) });
+    } else {
+      const entry = { id: Date.now() + Math.floor(Math.random() * 1000), createdOrder: store.entries.length + 1, ...payload };
+      store.entries.push(entry); pushUndo({ type:'add', domain, entry: cloneEntry(entry) });
     }
+    clearSelection(domain); renderTable(domain);
+  }
 
-    function loadArchive() {
-        archiveSelect.innerHTML = `<option value="">Archivierte Spiele anzeigen...</option>`;
-        const archive = JSON.parse(localStorage.getItem("handballArchive") || "[]");
-        archive.forEach(game => {
-            const opt = document.createElement("option");
-            opt.value = `${game.team}|${game.opponent}`;
-            opt.textContent = `${game.team} vs ${game.opponent}`;
-            archiveSelect.appendChild(opt);
-        });
+  function undoLast() {
+    const action = state.undoStack.pop();
+    if (!action) { alert('Es gibt keine Aktion zum Rückgängigmachen.'); return; }
+    const store = currentStore(action.domain);
+    if (action.type === 'add') store.entries = store.entries.filter(entry => entry.id !== action.entry.id);
+    else if (action.type === 'edit') {
+      const idx = store.entries.findIndex(entry => entry.id === action.after.id);
+      if (idx !== -1) store.entries[idx] = cloneEntry(action.before);
     }
+    clearSelection(action.domain); renderTable(action.domain);
+  }
 
-    archiveSelect.addEventListener("change", () => {
-        const val = archiveSelect.value;
-        if (!val) return;
-        const [team, opponent] = val.split("|");
-        const archive = JSON.parse(localStorage.getItem("handballArchive") || "[]");
-        const game = archive.find(g => g.team === team && g.opponent === opponent);
-        if (game) {
-            playersData = game.data;
-            playerNames = [...teams[team]];
-            currentTeam = team;
-            currentOpponent = opponent;
-            document.getElementById("headline").innerText = `Archiv: ${team} vs ${opponent}`;
-            document.getElementById("setup").classList.add("hidden");
-            document.getElementById("headline").classList.remove("hidden");
-            document.getElementById("playerExport").classList.remove("hidden");
-            document.getElementById("teamExport").classList.remove("hidden");
-            finishBtn.classList.add("hidden");
-            updateTables();
-        }
+  function sortValue(row, key) {
+    if (key === 'index') return row.createdOrder;
+    if (key === 'trigger') return row.trigger || '';
+    if (key === 'follow') return joinList(row.follows || []);
+    if (key === 'circle') return joinList(row.circles || []);
+    if (key === 'result') return row.resultDisplay || displayResult(row.result || '');
+    return '';
+  }
+
+  function sortEntries(domain) {
+    const store = currentStore(domain), rows = [...store.entries], { key, dir } = store.sort, factor = dir === 'asc' ? 1 : -1;
+    rows.sort((a,b) => {
+      const av = sortValue(a,key), bv = sortValue(b,key);
+      let value = typeof av === 'number' && typeof bv === 'number' ? av - bv : String(av).localeCompare(String(bv), 'de');
+      if (value === 0) value = a.createdOrder - b.createdOrder;
+      return value * factor;
     });
+    return rows;
+  }
 
-    teamSelect.addEventListener("change", () => { playerNames = [...teams[teamSelect.value]]; renderPlayerCheckboxes(); });
-    addPlayerBtn.addEventListener("click", () => { const n = newPlayerNameInput.value.trim(); if(n){ playerNames.push(n); renderPlayerCheckboxes(); newPlayerNameInput.value=""; }});
+  function setSort(domain, key) {
+    const store = currentStore(domain);
+    if (store.sort.key === key) store.sort.dir = store.sort.dir === 'asc' ? 'desc' : 'asc';
+    else { store.sort.key = key; store.sort.dir = key === 'index' ? 'desc' : 'asc'; }
+    renderTable(domain);
+  }
 
-    function validateAndStart() {
-        const opponent = document.getElementById("opponent").value.trim();
-        const selected = Array.from(document.querySelectorAll("#player-selection input:checked"));
-        if (!opponent || selected.length < 7) {
-            alert("Bitte korrigieren:\n- Gegner eingeben\n- Mindestens 7 Spieler auswählen");
-            return;
-        }
-        currentOpponent = opponent;
-        currentTeam = teamSelect.value;
-        gameFinished = false;
-        startGame(opponent, selected.map(cb => parseInt(cb.value)));
-    }
+  const startLongPress = (domain,id) => { stopLongPress(); longPressFired = false; pressTimer = setTimeout(() => { longPressFired = true; loadForEdit(domain,id); }, 550); };
+  const stopLongPress = () => clearTimeout(pressTimer);
 
-    function startGame(opponent, selectedPlayers) {
-        document.getElementById("headline").innerText = `Statistik vs ${opponent}`;
-        document.getElementById("setup").classList.add("hidden");
-        document.getElementById("headline").classList.remove("hidden");
-        document.getElementById("playerExport").classList.remove("hidden");
-        document.getElementById("teamExport").classList.remove("hidden");
-        finishBtn.classList.remove("hidden");
+  function loadForEdit(domain, id) {
+    const store = currentStore(domain), entry = store.entries.find(row => row.id === id); if (!entry) return;
+    store.editingId = id;
+    store.selection = { trigger: entry.trigger, follows: [...(entry.follows || [])], circles: [...(entry.circles || [])], result: entry.result, resultDisplay: entry.resultDisplay || displayResult(entry.result), group: entry.group };
+    updateSelectedButtons(domain); renderTable(domain); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-        const playersDiv = document.getElementById("players");
-        playersDiv.innerHTML = "";
-        selectedPlayers.forEach(num => {
-            playersData[num] = {};
-            [...actionsPositive, ...actionsNegative].forEach(a => playersData[num][a.key] = 0);
-            const card = document.createElement("div");
-            card.className = "player-card";
-            const nameDiv = document.createElement("div");
-            nameDiv.className = "player-name"; nameDiv.textContent = playerNames[num - 1];
-            card.appendChild(nameDiv);
-            [...actionsPositive, ...actionsNegative].forEach((a, idx) => {
-                const btn = document.createElement("button");
-                btn.className = `btn ${idx < actionsPositive.length ? "positive" : "negative"}`;
-                if (a.key.startsWith("TF") && idx >= actionsPositive.length) btn.classList.add("full-width");
-                btn.textContent = `${a.label} (0)`;
-                const startPress = () => { longPressActive = false; pressTimer = setTimeout(() => { playersData[num][a.key] = Math.max(0, playersData[num][a.key] - 1); btn.textContent = `${a.label} (${playersData[num][a.key]})`; updateTables(); saveGame(); longPressActive = true; }, 500); };
-                const endPress = () => { clearTimeout(pressTimer); if (!longPressActive) { playersData[num][a.key]++; btn.textContent = `${a.label} (${playersData[num][a.key]})`; updateTables(); saveGame(); }};
-                btn.addEventListener("mousedown", e => { if (!activeTouch) startPress(); });
-                btn.addEventListener("mouseup", e => { if (!activeTouch) endPress(); });
-                btn.addEventListener("mouseleave", () => clearTimeout(pressTimer));
-                btn.addEventListener("touchstart", e => { activeTouch = true; startPress(); e.preventDefault(); });
-                btn.addEventListener("touchend", e => { endPress(); setTimeout(() => activeTouch = false, 300); e.preventDefault(); });
-                btn.addEventListener("touchcancel", () => clearTimeout(pressTimer));
-                card.appendChild(btn);
-                if (idx === actionsPositive.length - 1) { const sep = document.createElement("div"); sep.style.borderBottom = "3px solid black"; sep.style.margin = "5px 0"; card.appendChild(sep); }
-            });
-            playersDiv.appendChild(card);
-        });
-        updateTables();
-        saveGame();
-    }
+  function pills(arr, cls) {
+    if (!arr || !arr.length) return '—';
+    return `<div class="pill-list">${arr.map(v => `<span class="pill ${cls}">${h(v)}</span>`).join('')}</div>`;
+  }
 
-    function updateTables() {
-        const buildTable = (id, header1, header2, data) => {
-            return `<table id="${id}"><thead><tr><th rowspan="2">${header1}</th>` +
-                `<th colspan="${actionsPositive.length}">Positive Aktionen</th>` +
-                `<th colspan="${actionsNegative.length}">Negative Aktionen</th></tr><tr>` +
-                actionsPositive.map(a => `<th>${a.label}</th>`).join("") +
-                actionsNegative.map((a,i) => `<th class="${i===0 ? "thick-separator" : ""}">${a.label}</th>`).join("") +
-                `</tr></thead><tbody>${data}</tbody></table>`;
-        };
-        let playerRows = Object.keys(playersData).map(num =>
-            `<tr><td><b>${playerNames[num - 1]}</b></td>` +
-            actionsPositive.map(a => `<td>${playersData[num][a.key]}</td>`).join("") +
-            actionsNegative.map((a,i) => `<td class="${i===0 ? "thick-separator" : ""}">${playersData[num][a.key]}</td>`).join("")
-        ).join("");
-        document.getElementById("playerStats").innerHTML = buildTable("playerTable", "Spieler", null, playerRows);
-        let sums = {}; [...actionsPositive, ...actionsNegative].forEach(a => sums[a.key] = 0);
-        Object.values(playersData).forEach(p => Object.keys(p).forEach(k => sums[k] += p[k]));
-        document.getElementById("teamStats").innerHTML = buildTable("teamTable", "Team", null,
-            `<tr><td><b>${currentTeam}</b></td>` +
-            actionsPositive.map(a => `<td>${sums[a.key]}</td>`).join("") +
-            actionsNegative.map((a,i) => `<td class="${i===0 ? "thick-separator" : ""}">${sums[a.key]}</td>`).join("") +
-            `</tr>`);
-    }
-
-    function saveGame() {
-        if (!currentOpponent || !currentTeam) return;
-        localStorage.setItem("currentGame", JSON.stringify({
-            opponent: currentOpponent, team: currentTeam, data: playersData, finished: gameFinished
-        }));
-    }
-
-    finishBtn.addEventListener("click", () => {
-        gameFinished = true;
-        const archive = JSON.parse(localStorage.getItem("handballArchive") || "[]");
-        archive.push({ opponent: currentOpponent, team: currentTeam, data: playersData, date: new Date().toISOString() });
-        localStorage.setItem("handballArchive", JSON.stringify(archive));
-        localStorage.removeItem("currentGame");
-        loadArchive();
-        alert("Spiel ins Archiv verschoben.");
-        location.reload();
+  function renderTable(domain) {
+    const store = currentStore(domain), body = els[`${domain}TableBody`], countEl = els[`${domain}Count`], sortInfoEl = els[`${domain}SortInfo`], rows = sortEntries(domain);
+    countEl.textContent = `${store.entries.length} Einträge`;
+    const labels = { index:'#', trigger:'Auslösehandlung', follow:'Folgehandlung', circle:'Kreisposition', result:'Ergebnis' };
+    sortInfoEl.textContent = `${labels[store.sort.key]} ${store.sort.dir === 'asc' ? '↑' : '↓'}`;
+    if (!rows.length) { body.innerHTML = `<tr><td colspan="5" class="empty">Noch keine ${domain === 'offense' ? 'offensiven' : 'defensiven'} Einträge.</td></tr>`; return; }
+    body.innerHTML = rows.map((row, idx) => `
+      <tr data-domain="${domain}" data-id="${row.id}" class="${store.editingId === row.id ? 'editing' : ''}">
+        <td>${idx + 1}</td>
+        <td>${h(row.trigger || '')}</td>
+        <td>${pills(row.circles || [], 'kreis')}</td>
+        <td>${pills(row.follows || [], 'follow')}</td>
+        <td class="result-cell ${row.group || ''}">${h(row.resultDisplay || displayResult(row.result || ''))}</td>
+      </tr>
+    `).join('');
+    body.querySelectorAll('tr[data-id]').forEach(tr => {
+      const id = Number(tr.dataset.id);
+      tr.addEventListener('mousedown', () => startLongPress(domain,id));
+      tr.addEventListener('mouseup', () => { if (!longPressFired) stopLongPress(); });
+      tr.addEventListener('mouseleave', stopLongPress);
+      tr.addEventListener('touchstart', e => { startLongPress(domain,id); e.preventDefault(); }, { passive:false });
+      tr.addEventListener('touchend', e => { stopLongPress(); e.preventDefault(); }, { passive:false });
+      tr.addEventListener('touchcancel', stopLongPress);
     });
+  }
 
-    startBtn.addEventListener("click", validateAndStart);
+  function applyResultColor(data) {
+    if (data.section !== 'body' || data.column.index !== 4) return;
+    const value = String(data.cell.raw || '');
+    if (value === 'Freiwurf') data.cell.styles.fillColor = [247,237,198];
+    else if (value === 'TF') data.cell.styles.fillColor = [247,219,219];
+    else if (value === 'DBR' || value === 'SLW' || value === 'SPW' || value === 'Kreis' || value === 'Außen' || value === 'TGS' || value === '7m' || value === 'leeres Tor') data.cell.styles.fillColor = [220,239,214];
+  }
+
+  function exportPdf() {
+    if (!window.jspdf || !window.jspdf.jsPDF || typeof window.jspdf.jsPDF !== 'function') {
+      alert('PDF-Export ist noch nicht geladen. Bitte die App einmal mit Internet öffnen und erneut versuchen.');
+      return;
+    }
+    const { jsPDF } = window.jspdf;
+    if (typeof jsPDF !== 'function') { alert('PDF-Export ist derzeit nicht verfügbar.'); return; }
+    const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+    if (typeof doc.autoTable !== 'function') { alert('PDF-Tabellenmodul konnte nicht geladen werden.'); return; }
+
+    doc.setFontSize(16); doc.text(`Kollektive Statistik vs ${state.meta.opponent}`, 14, 14); doc.setFontSize(10); doc.text(`Datum: ${fmtDate(state.meta.matchDate)}`, 14, 21);
+
+    const mapRows = domain => sortEntries(domain).map((row, idx) => {
+      const arr = [idx + 1, row.trigger || '', (row.circles || []).join(' | '), (row.follows || []).join(' | '), row.resultDisplay || displayResult(row.result || '')];
+      arr.__group = row.group || '';
+      return arr;
+    });
+    const offenseRows = mapRows('offense'), defenseRows = mapRows('defense');
+
+    doc.setFontSize(12); doc.text('Offensive Rohdaten', 14, 30);
+    doc.autoTable({ head:[['#','Auslösehandlung','Kreisposition','Folgehandlung','Ergebnis']], body: offenseRows.length ? offenseRows : [['','Keine Einträge','','','']], startY:33, theme:'grid', styles:{ fontSize:7.5, cellPadding:2, lineWidth:0.2, lineColor:[140,140,140] }, headStyles:{ fillColor:[230,242,241], textColor:20 }, didParseCell:applyResultColor });
+
+    let y = doc.lastAutoTable.finalY + 10; if (y > 170) { doc.addPage(); y = 18; }
+    doc.setFontSize(12); doc.text('Defensive Rohdaten', 14, y);
+    doc.autoTable({ head:[['#','Auslösehandlung','Kreisposition','Folgehandlung','Ergebnis']], body: defenseRows.length ? defenseRows : [['','Keine Einträge','','','']], startY:y + 3, theme:'grid', styles:{ fontSize:7.5, cellPadding:2, lineWidth:0.2, lineColor:[140,140,140] }, headStyles:{ fillColor:[248,232,233], textColor:20 }, didParseCell:applyResultColor });
+
+    const noteText = els.notes.value.trim();
+    if (noteText) {
+      let noteY = doc.lastAutoTable.finalY + 10; if (noteY > 180) { doc.addPage(); noteY = 20; }
+      doc.setFontSize(11); doc.text('Notizen:', 14, noteY); doc.setFontSize(10); const split = doc.splitTextToSize(noteText, 255); doc.text(split, 14, noteY + 6);
+    }
+    doc.save(`Kollektive_Statistik_vs_${state.meta.opponent.replace(/\s+/g,'_')}.pdf`);
+  }
+
+  function startApp() {
+    const opponent = els.opponent.value.trim(), matchDate = els.matchDate.value;
+    if (!opponent || !matchDate) { alert('Bitte Gegner und Datum eintragen.'); return; }
+    state.meta = { opponent, matchDate }; els.headline.textContent = `Statistik vs ${opponent}`; els.topMeta.textContent = fmtDate(matchDate); els.setup.classList.add('hidden'); els.workspace.classList.remove('hidden'); renderTable('offense'); renderTable('defense');
+  }
+
+  const brandLogo = document.getElementById('brandLogo');
+  if (brandLogo) brandLogo.onerror = () => { brandLogo.src = 'image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="72" fill="#0d5b1f"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="132" font-weight="700" fill="#ffffff">FÜCHSE</text></svg>`); };
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  document.querySelectorAll('th button[data-table]').forEach(btn => btn.addEventListener('click', () => setSort(btn.dataset.table, btn.dataset.sort)));
+  els.startBtn.addEventListener('click', startApp); els.undoBtn.addEventListener('click', undoLast); els.pdfBtn.addEventListener('click', exportPdf); els.offenseSaveBtn.addEventListener('click', () => saveEntry('offense')); els.defenseSaveBtn.addEventListener('click', () => saveEntry('defense')); els.offenseResetBtn.addEventListener('click', () => clearSelection('offense')); els.defenseResetBtn.addEventListener('click', () => clearSelection('defense'));
+  renderButtons(els.offenseTriggerButtons, triggerOptions, 'trigger', 'offense'); renderButtons(els.offenseFollowButtons, followOptions, 'follows', 'offense'); renderButtons(els.offenseCircleButtons, circleOptions, 'circles', 'offense'); renderButtons(els.offenseResultButtons, offenseResults, 'result', 'offense');
+  renderButtons(els.defenseTriggerButtons, triggerOptions, 'trigger', 'defense'); renderButtons(els.defenseFollowButtons, followOptions, 'follows', 'defense'); renderButtons(els.defenseCircleButtons, circleOptions, 'circles', 'defense'); renderButtons(els.defenseResultButtons, defenseResults, 'result', 'defense');
+  setToday();
 })();
 </script>
 </body>
